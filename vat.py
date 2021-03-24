@@ -14,13 +14,13 @@ args = parser.parse_args()
 
 file = args.file
 report = ''
-print(file)
+#print(file)
 if(file):
   f = open(file)
   file_html = f.read()
-  print(file_html)
+#  print(file_html)
   parsed_html = BeautifulSoup(file_html, 'html.parser')
-  print(parsed_html)
+#  print(parsed_html)
 
   forms           = parsed_html.find_all('form')
   comments        = parsed_html.find_all(string=lambda text:isinstance(text, Comment))
@@ -28,17 +28,18 @@ if(file):
 
   for form in forms:
     if(form.get('action').find('https') < 0):
-        report += 'Form Issue: Insecure form action ' + form.get('action') + ' found in document\n'
+        report += file + ' Form Issue: Insecure form action ' + form.get('action') + ' found in document\n'
 
   for comment in comments:
     if(comment.find('key: ') > -1):
-      report += 'Comment Issue: Key found in HTML comments, please remove\n'
+      report += file + ' Comment Issue: Key found in HTML comments, please remove\n'
 
   for password_input in password_inputs:
     if(password_input.get('type') != 'password'):
-      report += 'Input Issue: Password field requesting plain text\n'
+      report += file + ' Input Issue: Password field requesting plain text\n'
 
 else:
   print('That one wasn\'t so good')
 
-print(report)
+if(report != ''):
+  print(report)
